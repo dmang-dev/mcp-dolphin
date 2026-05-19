@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-05-19
+
+Quick follow-up to v0.1.0.
+
+### Fixed
+
+- **`package.json` description** — v0.1.0 shipped with the draft
+  feature list ("controllers GC + Wii Remote + Nunchuk + Classic +
+  GBA, pause/resume/reset") that didn't match what actually landed.
+  Replaced with the accurate "GameCube + Wii Remote controllers,
+  reset, savestate, and frame advance" line so the npm listing
+  matches the README and CHANGELOG.
+
+### Added
+
+- **`glama.json`** + **`Dockerfile`** for the [Glama MCP registry](https://glama.ai/mcp/servers).
+  The Dockerfile builds the Node server and ships the Python bridge
+  alongside; the server starts cleanly without Dolphin present
+  (logs a warning, serves `tools/list` regardless), which is what
+  Glama's introspection check expects.
+
 ## [0.1.0] - 2026-05-19
 
 Initial public release. Live-tested end-to-end against Felk Dolphin
@@ -98,5 +119,6 @@ GIL or refcount races with Felk's C++ side.
   disc ID ASCII (e.g. `GMPP` for Mario Party 4), bytes 4-5 are the
   maker code, byte 6 is disc number, byte 7 is disc version.
 
-[Unreleased]: https://github.com/dmang-dev/mcp-dolphin/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/dmang-dev/mcp-dolphin/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.1.1
 [0.1.0]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.1.0

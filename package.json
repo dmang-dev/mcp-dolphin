@@ -1,7 +1,7 @@
 {
   "name": "mcp-dolphin",
-  "version": "0.1.0",
-  "description": "MCP server for Dolphin (GameCube + Wii) — drives memory r/w, controllers (GC + Wii Remote + Nunchuk + Classic + GBA), pause/resume/reset, savestate, and frame advance via Felk's Python-scripting Dolphin fork",
+  "version": "0.1.1",
+  "description": "MCP server for Dolphin (GameCube + Wii) — drives memory r/w, GameCube + Wii Remote controllers, reset, savestate, and frame advance via Felk's Python-scripting Dolphin fork",
   "license": "MIT",
   "type": "module",
   "bin": {
