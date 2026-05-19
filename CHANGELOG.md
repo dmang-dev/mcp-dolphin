@@ -7,6 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-19
+
+Wii Remote motion input — IR pointer, accelerometer, and MotionPlus
+angular velocity. Plus an investigation that ruled out pause/resume
+via the `framedrawn` event (deferred indefinitely).
+
+### Added
+
+- **`dolphin_set_wiimote_pointer(port, x, y)`** — IR pointer position
+  for Remote port 0-3. Floats, typically -1.0..1.0 each axis.
+- **`dolphin_set_wiimote_acceleration(port, x, y, z)`** — raw
+  accelerometer reading in approximate g-units. Use for Wii Sports
+  bowling/golf swings, Mario Galaxy shake-to-spin, etc.
+- **`dolphin_set_wiimote_angular_velocity(port, x, y, z)`** — Wii
+  MotionPlus rotation rate in rad/s. Requires a MotionPlus-enabled
+  Remote in Dolphin's input config (Wii Sports Resort, Skyward Sword).
+- Bridge bumped to **v0.2.0** with matching getters (returns float
+  tuples) and setters that write through Felk's `wii_manip` with
+  `ClearOn::NextFrame` semantics — same per-frame contract as the
+  button setters from v0.1.0.
+
+All three motion tools use ClearOn::NextFrame semantics — to hold a
+pose, call repeatedly each frame (alternate with
+`dolphin_frame_advance(1)` for TAS sequencing).
+
+### Investigated, not shipped
+
+- **Pause/resume via `event.framedrawn`** — hypothesis was that
+  `framedrawn` fires while emu is paused (since the GUI keeps
+  repainting), letting the coroutine drain commands and dispatch
+  `emulation.resume()`. **Disproved** with a deadlock smoke test
+  on Felk Preview 4 + Mario Party 4: framedrawn does not fire while
+  paused, so pause/resume via MCP still deadlocks. Hidden cost found
+  along the way: discarding `await event.framedrawn()`'s return
+  value (a 1+ MB framebuffer bytes object) without explicit cleanup
+  crashes Dolphin with SIGSEGV when combined with a busy poll loop.
+  Won't ship pause/resume without an upstream Felk change (e.g. a
+  `tick` event that fires regardless of emu state).
+
+### Felk Preview 4 caveats (newly documented)
+
+- **Removing a script from the Scripting panel can crash Dolphin**
+  with SIGSEGV (observed twice during v0.2 testing). Workaround:
+  if you need to swap scripts, restart Dolphin instead of removing.
+
+### Known limitations (unchanged from v0.1.x)
+
+- **Felk fork still required.** Mainline Dolphin has no scripting.
+- **No `dolphin_pause` / `dolphin_resume`** — see "Investigated"
+  above. Use Dolphin's GUI hotkey (default Ctrl-P) instead.
+- **No swing / shake / tilt helpers** — Felk exposes them but the
+  argument signatures aren't well documented; deferred to v0.3.
+- **No Nunchuk / Classic Controller / GBA-via-Wii input.**
+- **No screenshot tool.**
+- **No memory breakpoints.**
+- **Wii motion observability** — `controller.get_wiimote_*` returns
+  zeros on a GameCube title because no Wii Remote emulation is
+  active. To verify motion ingestion, load a Wii game.
+
 ## [0.1.1] - 2026-05-19
 
 Quick follow-up to v0.1.0.
@@ -119,6 +178,7 @@ GIL or refcount races with Felk's C++ side.
   disc ID ASCII (e.g. `GMPP` for Mario Party 4), bytes 4-5 are the
   maker code, byte 6 is disc number, byte 7 is disc version.
 
-[Unreleased]: https://github.com/dmang-dev/mcp-dolphin/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/dmang-dev/mcp-dolphin/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.2.0
 [0.1.1]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.1.1
 [0.1.0]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.1.0

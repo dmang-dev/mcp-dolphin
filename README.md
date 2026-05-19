@@ -8,7 +8,7 @@ An [MCP](https://modelcontextprotocol.io) server for **Dolphin** (GameCube + Wii
 ## What you can do with it
 
 - **Read & write emulated PowerPC memory** — 8/16/32/64-bit, MEM1 + MEM2
-- **Send controller input** — GameCube (digital + analog sticks + triggers), Wii Remote buttons
+- **Send controller input** — GameCube (digital + analog sticks + triggers), Wii Remote (buttons + IR pointer + accelerometer + MotionPlus angular velocity)
 - **Reset** the emulator (pause/resume not in v0.1.0 — see Known limitations)
 - **Save / load state** to numbered slots (0-255; 1-10 map to F1-F10 in Dolphin)
 - **Frame advance** — wait N frames synchronously for TAS-style precision
@@ -94,6 +94,9 @@ Load a GameCube or Wii game in Dolphin, then ask the agent to call `dolphin_ping
 | `dolphin_write8/16/32/64` | Write PowerPC memory |
 | `dolphin_press_gc_buttons` | Set GameCube controller state (port + button/axis dict) |
 | `dolphin_press_wiimote_buttons` | Set Wii Remote button state |
+| `dolphin_set_wiimote_pointer` | Set Wii Remote IR pointer position (port + x + y) |
+| `dolphin_set_wiimote_acceleration` | Set Wii Remote accelerometer (port + x + y + z, ~g units) |
+| `dolphin_set_wiimote_angular_velocity` | Set Wii MotionPlus angular velocity (port + x + y + z, rad/s) |
 | `dolphin_reset` | Emulation soft-reset (pause/resume deferred to v0.2 — see Known limitations) |
 | `dolphin_frame_advance` | Wait N frames (TAS sequencing) |
 | `dolphin_save_state` / `dolphin_load_state` | Slot-based savestate (0-255) |

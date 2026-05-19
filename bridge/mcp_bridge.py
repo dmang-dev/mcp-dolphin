@@ -53,7 +53,7 @@ print("[mcp-bridge] imported dolphin modules OK")
 import json
 import socket
 
-BRIDGE_VERSION = "0.1.0"
+BRIDGE_VERSION = "0.2.0"
 LISTEN_HOST = "127.0.0.1"
 LISTEN_PORT = 55355
 
@@ -104,6 +104,18 @@ def _set_gc_buttons(p):       controller.set_gc_buttons(p[0], p[1]); return None
 def _get_wiimote_buttons(p):  return controller.get_wiimote_buttons(p[0])
 def _set_wiimote_buttons(p):  controller.set_wiimote_buttons(p[0], p[1]); return None
 
+# Wii Remote motion (v0.2.0).
+# Felk's set_wiimote_* helpers use ClearOn::NextFrame semantics — values
+# reset after one frame, same as button state. To hold a pose across many
+# frames, repeat the call. Pointer/accel/angular_velocity all return
+# floats; tuple unpacks as (x, y) or (x, y, z).
+def _get_wiimote_pointer(p):           return controller.get_wiimote_pointer(p[0])
+def _set_wiimote_pointer(p):           controller.set_wiimote_pointer(p[0], p[1], p[2]); return None
+def _get_wiimote_acceleration(p):      return controller.get_wiimote_acceleration(p[0])
+def _set_wiimote_acceleration(p):      controller.set_wiimote_acceleration(p[0], p[1], p[2], p[3]); return None
+def _get_wiimote_angular_velocity(p):  return controller.get_wiimote_angular_velocity(p[0])
+def _set_wiimote_angular_velocity(p):  controller.set_wiimote_angular_velocity(p[0], p[1], p[2], p[3]); return None
+
 def _pause(_p):   emulation.pause();  return None
 def _resume(_p):  emulation.resume(); return None
 def _reset(_p):   emulation.reset();  return None
@@ -139,6 +151,12 @@ HANDLERS = {
     "controller.set_gc_buttons":      _set_gc_buttons,
     "controller.get_wiimote_buttons": _get_wiimote_buttons,
     "controller.set_wiimote_buttons": _set_wiimote_buttons,
+    "controller.get_wiimote_pointer":          _get_wiimote_pointer,
+    "controller.set_wiimote_pointer":          _set_wiimote_pointer,
+    "controller.get_wiimote_acceleration":     _get_wiimote_acceleration,
+    "controller.set_wiimote_acceleration":     _set_wiimote_acceleration,
+    "controller.get_wiimote_angular_velocity": _get_wiimote_angular_velocity,
+    "controller.set_wiimote_angular_velocity": _set_wiimote_angular_velocity,
     "emulation.pause":                _pause,
     "emulation.resume":               _resume,
     "emulation.reset":                _reset,

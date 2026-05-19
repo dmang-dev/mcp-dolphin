@@ -330,13 +330,76 @@ const TOOLS: Tool[] = [
     },
   },
 
+  // ── Wii Remote motion (v0.2.0) ──────────────────────────────────────────
+
+  {
+    name: "dolphin_set_wiimote_pointer",
+    description:
+      "PURPOSE: Set the Wii Remote's IR pointer position on the given port. " +
+      "USAGE: Use for menu navigation in Wii titles that aim via the Remote (Wii Sports, Smash Bros menus, House of the Dead, etc.). Coordinates are normalised floats; the exact useful range depends on the game's calibration but typically `(-1.0, -1.0)` is top-left and `(1.0, 1.0)` is bottom-right relative to the sensor bar zone. To hold a position across multiple frames call repeatedly — Felk's helper uses ClearOn::NextFrame semantics. " +
+      "BEHAVIOR: DESTRUCTIVE to pointer state for the addressed port. Sets the IR X+Y for the next render frame. Combine with dolphin_press_wiimote_buttons for click-and-aim sequences. " +
+      "RETURNS: 'Set Wii Remote port N pointer to (x, y)'.",
+    inputSchema: {
+      type: "object",
+      required: ["x", "y"],
+      properties: {
+        port: { type: "integer", minimum: 0, maximum: 3, description: "Wii Remote port (0-3, default 0)." },
+        x:    { type: "number", description: "IR pointer X. Float, typically -1.0..1.0 horizontal." },
+        y:    { type: "number", description: "IR pointer Y. Float, typically -1.0..1.0 vertical." },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "dolphin_set_wiimote_acceleration",
+    description:
+      "PURPOSE: Set the Wii Remote's accelerometer reading on the given port. " +
+      "USAGE: Use for games that read raw accelerometer data — Wii Sports bowling/golf swings, Mario Galaxy's shake-to-spin, anything that doesn't go through the higher-level swing/shake/tilt helpers (deferred to a future release). Units are roughly g (Earth gravity ≈ 1.0); a Remote held still and pointing forward typically reads about (0, 1, 0). For a single-frame impulse, set the value then dolphin_frame_advance(1) then reset to neutral. " +
+      "BEHAVIOR: DESTRUCTIVE to accelerometer state for the addressed port. ClearOn::NextFrame semantics — set persists for one render frame only. " +
+      "RETURNS: 'Set Wii Remote port N accel to (x, y, z)'.",
+    inputSchema: {
+      type: "object",
+      required: ["x", "y", "z"],
+      properties: {
+        port: { type: "integer", minimum: 0, maximum: 3, description: "Wii Remote port (0-3, default 0)." },
+        x:    { type: "number", description: "Accel X (roughly g)." },
+        y:    { type: "number", description: "Accel Y (roughly g; ~1.0 for level-and-still pointing forward)." },
+        z:    { type: "number", description: "Accel Z (roughly g)." },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "dolphin_set_wiimote_angular_velocity",
+    description:
+      "PURPOSE: Set the Wii MotionPlus angular velocity on the given port. " +
+      "USAGE: Use for games that read rotation rate from the MotionPlus add-on (Wii Sports Resort, Skyward Sword). Units are radians per second around each axis. The Remote must be a MotionPlus-enabled controller in Dolphin's input config for this to take effect. " +
+      "BEHAVIOR: DESTRUCTIVE to angular-velocity state for the addressed port. ClearOn::NextFrame semantics. " +
+      "RETURNS: 'Set Wii Remote port N angular_velocity to (x, y, z)'.",
+    inputSchema: {
+      type: "object",
+      required: ["x", "y", "z"],
+      properties: {
+        port: { type: "integer", minimum: 0, maximum: 3, description: "Wii Remote port (0-3, default 0)." },
+        x:    { type: "number", description: "Pitch rate (rad/s)." },
+        y:    { type: "number", description: "Yaw rate (rad/s)." },
+        z:    { type: "number", description: "Roll rate (rad/s)." },
+      },
+      additionalProperties: false,
+    },
+  },
+
   // ── Emulation control ───────────────────────────────────────────────────
   //
-  // dolphin_pause / dolphin_resume are intentionally NOT exposed in v0.1.0.
-  // The bridge runs on the emu thread via `await event.frameadvance()`. When
-  // emu is paused, no frame fires, the coroutine sleeps, and no further
-  // commands (including resume) get dispatched. Use Dolphin's GUI pause
-  // (default Ctrl-P) until v0.2.0 figures out a non-blocking event source.
+  // dolphin_pause / dolphin_resume are intentionally NOT exposed in v0.2.0.
+  // Investigated via framedrawn coroutine yield (which we hoped fires while
+  // paused). It doesn't, at least on Felk Preview 4 + Mario Party 4 —
+  // verified with a deadlock smoke test. No other event in Felk's
+  // exposed set fires when emu is paused. dolphin_pause/resume would
+  // require either an upstream Felk change (e.g. a `tick` event that
+  // fires regardless of emu state) or a different bridge architecture
+  // (e.g. background thread for dispatch, which itself crashes Felk).
+  // Use Dolphin's GUI pause hotkey (default Ctrl-P) until either changes.
   //
   // dolphin_reset doesn't have this problem — reset doesn't suspend emu.
 
@@ -494,6 +557,25 @@ export function registerTools(server: Server, dol: DolphinClient): void {
         await dol.call("controller.set_wiimote_buttons", [port, state]);
         const keys = Object.keys(state).join(",") || "(empty)";
         return ok(`Set Wii Remote port ${port}: ${keys}`);
+      }
+
+      case "dolphin_set_wiimote_pointer": {
+        const port = (p.port as number | undefined) ?? 0;
+        const x = p.x as number, y = p.y as number;
+        await dol.call("controller.set_wiimote_pointer", [port, x, y]);
+        return ok(`Set Wii Remote port ${port} pointer to (${x}, ${y})`);
+      }
+      case "dolphin_set_wiimote_acceleration": {
+        const port = (p.port as number | undefined) ?? 0;
+        const x = p.x as number, y = p.y as number, z = p.z as number;
+        await dol.call("controller.set_wiimote_acceleration", [port, x, y, z]);
+        return ok(`Set Wii Remote port ${port} accel to (${x}, ${y}, ${z})`);
+      }
+      case "dolphin_set_wiimote_angular_velocity": {
+        const port = (p.port as number | undefined) ?? 0;
+        const x = p.x as number, y = p.y as number, z = p.z as number;
+        await dol.call("controller.set_wiimote_angular_velocity", [port, x, y, z]);
+        return ok(`Set Wii Remote port ${port} angular_velocity to (${x}, ${y}, ${z})`);
       }
 
       case "dolphin_reset":  await dol.call("emulation.reset");  return ok("Reset triggered.");

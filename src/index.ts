@@ -77,7 +77,7 @@ async function main() {
   }
 
   const server = new Server(
-    { name: "mcp-dolphin", version: "0.1.1" },
+    { name: "mcp-dolphin", version: "0.2.0" },
     { capabilities: { tools: {} } },
   );
   registerTools(server, dol);
