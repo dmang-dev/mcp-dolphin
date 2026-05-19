@@ -1,0 +1,52 @@
+{
+  "name": "mcp-dolphin",
+  "version": "0.1.0",
+  "description": "MCP server for Dolphin (GameCube + Wii) — drives memory r/w, controllers (GC + Wii Remote + Nunchuk + Classic + GBA), pause/resume/reset, savestate, and frame advance via Felk's Python-scripting Dolphin fork",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "mcp-dolphin": "dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "bridge/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc && node -e \"import('node:fs').then(fs => fs.chmodSync('dist/index.js', 0o755))\"",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepare": "npm run build",
+    "inspector": "npx @modelcontextprotocol/inspector node dist/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmang-dev/mcp-dolphin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dmang-dev/mcp-dolphin/issues"
+  },
+  "homepage": "https://github.com/dmang-dev/mcp-dolphin#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "dolphin",
+    "dolphin-emu",
+    "gamecube",
+    "wii",
+    "emulator",
+    "felk",
+    "claude"
+  ]
+}

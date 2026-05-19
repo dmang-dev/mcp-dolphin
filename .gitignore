@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.js.map
+.claude/
+.rstk/
+.scratch/
+artifacts/
+*.png
