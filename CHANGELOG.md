@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`dolphin_screenshot`** — capture the current video frame as an inline PNG.
+  The bridge registers Felk's `event.on_framedrawn` callback and keeps the
+  latest RGB frame; the tool encodes it to PNG (no new dependencies — a
+  hand-rolled encoder over `node:zlib`) and returns it as an MCP image. Bridge
+  protocol gains a `gui.screenshot` method; `BRIDGE_VERSION` → 0.3.0. The
+  callback registration is probed at startup, so older Felk builds without
+  `on_framedrawn` keep working (screenshots just report unavailable). Closes
+  the screenshot half of the completeness gap flagged on the Glama profile.
+
+### Note
+
+- **Pause/resume stays deferred** — re-confirmed infeasible on the current
+  architecture, not merely deferred. The bridge coroutine is event-driven
+  (woken by `frameadvance`/`framedrawn`); a real `emulation.pause()` halts the
+  emu thread so no event fires and `resume` can never be received (deadlock),
+  and Felk Preview 4 segfaults on background threads. No Felk event fires while
+  paused, so there is no wake source to service the socket. Use Dolphin's GUI
+  pause hotkey until Felk adds a pause-independent tick event.
+
 ## [0.2.0] - 2026-05-19
 
 Wii Remote motion input — IR pointer, accelerometer, and MotionPlus

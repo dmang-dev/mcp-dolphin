@@ -50,15 +50,30 @@ print("[mcp-bridge] script start")
 from dolphin import controller, emulation, event, memory, savestate
 print("[mcp-bridge] imported dolphin modules OK")
 
+import base64
 import json
 import socket
 
-BRIDGE_VERSION = "0.2.0"
+BRIDGE_VERSION = "0.3.0"
 LISTEN_HOST = "127.0.0.1"
 LISTEN_PORT = 55355
 
 
 _frame_count = 0
+
+# Most recent rendered frame, captured via Felk's event.on_framedrawn:
+#   (width, height, rgb_bytes)  — rgb_bytes is width*height*3 (RGB, no alpha).
+# Kept latest-only so dolphin_screenshot can return the current frame (and a
+# GUI-paused frame stays available). None until the first frame is drawn, or
+# if this Dolphin build doesn't expose on_framedrawn (see startup probe).
+_last_frame = None
+_framedrawn_supported = False
+
+
+def _on_framedrawn(width, height, data):
+    # Fires on every drawn frame while emulation runs. Keep only the latest.
+    global _last_frame
+    _last_frame = (width, height, data)
 
 
 # ── API dispatch ───────────────────────────────────────────────────────
@@ -125,6 +140,22 @@ def _load_from_slot(p):  savestate.load_from_slot(p[0]); return None
 
 def _frame_get_count(_p):  return _frame_count
 
+def _screenshot(_p):
+    if not _framedrawn_supported:
+        raise RuntimeError(
+            "screenshots unavailable: this Dolphin build does not expose "
+            "event.on_framedrawn (needs a newer Felk scripting build)")
+    if _last_frame is None:
+        raise RuntimeError(
+            "no frame captured yet — let the game render at least one frame, then retry")
+    width, height, data = _last_frame
+    return {
+        "width": width,
+        "height": height,
+        "format": "rgb",  # width*height*3 bytes, no alpha
+        "rgb_base64": base64.b64encode(bytes(data)).decode("ascii"),
+    }
+
 
 HANDLERS = {
     "bridge.ping":                    _ping,
@@ -163,6 +194,7 @@ HANDLERS = {
     "savestate.save_to_slot":         _save_to_slot,
     "savestate.load_from_slot":       _load_from_slot,
     "frame.get_count":                _frame_get_count,
+    "gui.screenshot":                 _screenshot,
 }
 
 
@@ -256,6 +288,16 @@ def _poll_sockets():
                 pass
     _clients = keep
 
+
+# Register the framebuffer callback so dolphin_screenshot has a frame to return.
+# event.on_framedrawn is a newer Felk addition — probe it so older builds keep
+# working (screenshots just stay unavailable there).
+try:
+    event.on_framedrawn(_on_framedrawn)
+    _framedrawn_supported = True
+    print("[mcp-bridge] on_framedrawn registered — dolphin_screenshot enabled")
+except Exception as e:
+    print(f"[mcp-bridge] on_framedrawn unavailable ({type(e).__name__}: {e}) — dolphin_screenshot disabled")
 
 print("[mcp-bridge] entering frame loop")
 while True:
