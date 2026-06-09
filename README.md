@@ -2,6 +2,10 @@
 
 [![npm version](https://img.shields.io/npm/v/mcp-dolphin.svg)](https://www.npmjs.com/package/mcp-dolphin)
 [![License: MIT](https://img.shields.io/npm/l/mcp-dolphin.svg)](LICENSE)
+[![Snyk](https://snyk.io/test/npm/mcp-dolphin/badge.svg)](https://snyk.io/test/npm/mcp-dolphin)
+[![Socket](https://img.shields.io/badge/Socket-security-2F7BFF?logo=socket)](https://socket.dev/npm/package/mcp-dolphin)
+[![Bundlephobia](https://img.shields.io/badge/bundlephobia-size-FF6B81)](https://bundlephobia.com/package/mcp-dolphin)
+[![npmgraph](https://img.shields.io/badge/npmgraph-dependencies-2496ED)](https://npmgraph.js.org/?q=mcp-dolphin)
 
 An [MCP](https://modelcontextprotocol.io) server for **Dolphin** (GameCube + Wii) — drives memory r/w, controller input (GameCube + Wii Remote), pause/resume/reset, savestates, and frame advance from MCP-compatible clients (Claude Desktop, Claude Code, etc.).
 
