@@ -28,6 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   paused, so there is no wake source to service the socket. Use Dolphin's GUI
   pause hotkey until Felk adds a pause-independent tick event.
 
+### Changed
+
+- **BREAKING: minimum Node version raised from >=18 to >=22.** Node 18 (EOL
+  April 2025) and 20 (EOL April 2026) are no longer supported; only active
+  LTS lines are. CI matrix now tests Node 22 + 24, and workflow actions
+  bumped to `actions/checkout@v5` / `actions/setup-node@v5` (the v4 actions'
+  Node 20 runtime is deprecated by GitHub as of June 2026).
+
 ## [0.2.0] - 2026-05-19
 
 Wii Remote motion input — IR pointer, accelerometer, and MotionPlus
