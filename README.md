@@ -1,6 +1,8 @@
 # mcp-dolphin
 
 [![npm version](https://img.shields.io/npm/v/mcp-dolphin.svg)](https://www.npmjs.com/package/mcp-dolphin)
+[![npm downloads](https://img.shields.io/npm/dm/mcp-dolphin.svg)](https://www.npmjs.com/package/mcp-dolphin)
+[![CI](https://github.com/dmang-dev/mcp-dolphin/actions/workflows/ci.yml/badge.svg)](https://github.com/dmang-dev/mcp-dolphin/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/npm/l/mcp-dolphin.svg)](LICENSE)
 [![Snyk](https://snyk.io/test/npm/mcp-dolphin/badge.svg)](https://snyk.io/test/npm/mcp-dolphin)
 [![Socket](https://img.shields.io/badge/Socket-security-2F7BFF?logo=socket)](https://socket.dev/npm/package/mcp-dolphin)
