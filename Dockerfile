@@ -9,7 +9,7 @@
 # install Felk's Dolphin fork and load bridge/mcp_bridge.py via Felk's
 # Scripting panel (View → Scripting). See README.md.
 
-FROM node:22-trixie-slim
+FROM node:26-trixie-slim
 WORKDIR /app
 
 # Install dependencies. --ignore-scripts skips the `prepare` hook; we run
