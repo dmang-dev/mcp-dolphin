@@ -169,6 +169,16 @@ If you change the port, edit both `mcp_bridge.py` (in your scripts dir) and set 
 | Controller input has no effect | Game expects input on a different port. Try `port: 0` first, then 1-3. For Wii games requiring motion, this v0.1.0 doesn't cover Wii Remote pointer/accel yet. |
 | Tool calls hang ~10 s then time out | Bridge script crashed inside Dolphin. Open Felk's Scripting panel, remove the script, re-add it. |
 
+## Debugging with the MCP Inspector
+
+Browse and call this server's tools interactively with the [MCP Inspector](https://github.com/modelcontextprotocol/inspector):
+
+```bash
+npm run inspector
+```
+
+Build first if you've edited `src/` since your last `npm install` (`npm run build`, or keep `npm run dev` running). Override the bridge address with `DOLPHIN_BRIDGE_HOST` / `DOLPHIN_BRIDGE_PORT` (default `127.0.0.1:55355`). `tools/list` works even without Dolphin connected; *calling* a tool needs Felk's Dolphin running `bridge/mcp_bridge.py`.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
