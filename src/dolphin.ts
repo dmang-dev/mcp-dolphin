@@ -118,8 +118,11 @@ export class DolphinClient {
     this.readyPromise = null;
   }
 
-  private onData(chunk: Buffer): void {
-    this.rxBuffer += chunk.toString("utf8");
+  private onData(chunk: string | Buffer): void {
+    // The socket never calls setEncoding(), so at runtime chunk is a Buffer.
+    // Node's "data" event is typed as (string | Buffer) since the encoding is
+    // not statically known, so narrow before appending to the string buffer.
+    this.rxBuffer += typeof chunk === "string" ? chunk : chunk.toString("utf8");
     let nl = this.rxBuffer.indexOf("\n");
     while (nl !== -1) {
       const line = this.rxBuffer.slice(0, nl);

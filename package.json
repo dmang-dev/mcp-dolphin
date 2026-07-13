@@ -1,6 +1,6 @@
 {
   "name": "mcp-dolphin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "MCP server for Dolphin (GameCube + Wii) — drives memory r/w, GameCube + Wii Remote (buttons + IR pointer + accelerometer + MotionPlus), reset, savestate, and frame advance via Felk's Python-scripting Dolphin fork",
   "license": "MIT",
   "type": "module",
@@ -35,8 +35,8 @@
     "@modelcontextprotocol/sdk": "^1.12.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "typescript": "^5.5.0"
+    "@types/node": "^26.1.0",
+    "typescript": "^7.0.2"
   },
   "keywords": [
     "mcp",
