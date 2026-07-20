@@ -30,6 +30,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   paused, so there is no wake source to service the socket. Use Dolphin's GUI
   pause hotkey until Felk adds a pause-independent tick event.
 
+## [0.2.1] - 2026-06-11
+
+Infrastructure-only release — CI, container base image, supported Node
+versions, dependency advisories, and README badges. No tool or bridge
+protocol changes.
+
+### Added
+
+- **GitHub Actions build matrix** — builds across Linux, macOS, and Windows
+  (see the Node version floor under Changed below for the versions tested as
+  of this release).
+
 ### Changed
 
 - **BREAKING: minimum Node version raised from >=18 to >=22.** Node 18 (EOL
@@ -37,6 +49,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   LTS lines are. CI matrix now tests Node 22 + 24, and workflow actions
   bumped to `actions/checkout@v5` / `actions/setup-node@v5` (the v4 actions'
   Node 20 runtime is deprecated by GitHub as of June 2026).
+- **Docker base image moved to Debian 13 "trixie"** — `node:22-slim` →
+  `node:22-trixie-slim`.
+- **README badges** — added CI status and npm-downloads badges, plus Socket,
+  Snyk, Bundlephobia, and npmgraph badges.
+
+### Security
+
+- Bumped transitive dependencies to resolve `npm audit` advisories.
 
 ## [0.2.0] - 2026-05-19
 
@@ -211,6 +231,7 @@ GIL or refcount races with Felk's C++ side.
 
 [Unreleased]: https://github.com/dmang-dev/mcp-dolphin/compare/v0.3.0...HEAD
 [0.3.0]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.3.0
+[0.2.1]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.2.1
 [0.2.0]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.2.0
 [0.1.1]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.1.1
 [0.1.0]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.1.0
