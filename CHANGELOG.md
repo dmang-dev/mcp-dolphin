@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-19
+
 ### Added
 
 - **`dolphin_screenshot`** — capture the current video frame as an inline PNG.
@@ -207,7 +209,8 @@ GIL or refcount races with Felk's C++ side.
   disc ID ASCII (e.g. `GMPP` for Mario Party 4), bytes 4-5 are the
   maker code, byte 6 is disc number, byte 7 is disc version.
 
-[Unreleased]: https://github.com/dmang-dev/mcp-dolphin/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/dmang-dev/mcp-dolphin/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.3.0
 [0.2.0]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.2.0
 [0.1.1]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.1.1
 [0.1.0]: https://github.com/dmang-dev/mcp-dolphin/releases/tag/v0.1.0
