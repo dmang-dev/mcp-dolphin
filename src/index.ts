@@ -14,9 +14,8 @@
 //   DOLPHIN_BRIDGE_PORT   default 55355  (must match LISTEN_PORT in bridge)
 //   DOLPHIN_TIMEOUT_MS    default 10000  (per-call timeout)
 //   MCP_DOLPHIN_DEBUG=1   trace every TX message to stderr
-
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
+import { Server } from "@modelcontextprotocol/server";
 import { DolphinClient } from "./dolphin.js";
 import { registerTools } from "./tools.js";
 
